@@ -43,6 +43,13 @@ class SafetyError(RuntimeError):
     pass
 
 
+def configure_output():
+    # Agent shells commonly capture pipes using UTF-8, even on older Windows locales.
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8", errors="backslashreplace")
+
+
 def read_json(path):
     if is_link(Path(path)):
         raise SafetyError("Private state files must not be links.")
@@ -785,6 +792,7 @@ def index(args):
 
 
 def main(argv=None):
+    configure_output()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--version", action="version", version=VERSION)
     commands = parser.add_subparsers(dest="command", required=True)

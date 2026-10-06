@@ -557,6 +557,7 @@ def restore(args):
 
 
 def main(argv=None):
+    org.configure_output()
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
     p = commands.add_parser("build"); p.add_argument("--target", required=True); p.add_argument("--out", required=True); p.set_defaults(fn=build)

@@ -4,6 +4,7 @@ from . import organizer
 
 
 def main(argv=None):
+    organizer.configure_output()
     argv = list(sys.argv[1:] if argv is None else argv)
     if argv in (["--help"], ["-h"]):
         print("Folio Atlas — a map of your work\n\n"

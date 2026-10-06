@@ -1,4 +1,5 @@
 import json
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -10,6 +11,20 @@ RUN = ROOT / "test-runs" / ("refresh-" + uuid.uuid4().hex)
 
 
 class RefreshTests(unittest.TestCase):
+    def test_unicode_paths_work_with_non_utf8_parent_locale(self):
+        folder = RUN / "Fictional 日本語 Inbox"; folder.mkdir(parents=True)
+        (folder / "résumé 日本語.pdf").write_bytes(b"fictional international resume")
+        env = os.environ.copy(); env["PYTHONIOENCODING"] = "ascii"
+        def run(*args):
+            p = subprocess.run([sys.executable, str(ROOT / "scripts/folio.py"), *args, "--target", str(folder)],
+                               env=env, capture_output=True, text=True, encoding="utf-8")
+            self.assertEqual(p.returncode, 0, p.stderr); return p.stdout
+        preview = json.loads(run("preview", "--types-only"))
+        plan = Path(preview["plan"]).name
+        self.assertEqual(json.loads(run("apply", "--plan", plan))["at_destination"], 1)
+        self.assertFalse(json.loads(run("verify", "--plan", plan))["failures"])
+        self.assertIn("日本語", run("index"))
+
     def test_reuses_schema_and_never_rearranges_existing_library(self):
         folder = RUN / "Inbox"; folder.mkdir(parents=True)
         projects = RUN / "Projects"; project = projects / "Juniper Studio"; project.mkdir(parents=True)
