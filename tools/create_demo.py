@@ -53,7 +53,7 @@ def main():
     if args.add_arrivals:
         base = root_path(args.add_arrivals)
         marker = base / "FOLIO-DEMO.json"
-        if not marker.is_file() or json.loads(marker.read_text()).get("synthetic") is not True:
+        if not marker.is_file() or json.loads(marker.read_text(encoding="utf-8")).get("synthetic") is not True:
             raise SystemExit("Arrivals require a Folio-generated fictional demo folder.")
         inbox = root_path(base / "Inbox")
         for name, content in [("Juniper Studio campaign revision.pdf", pdf("Juniper Studio revision")),

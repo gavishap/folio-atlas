@@ -84,7 +84,7 @@ class BackupTests(unittest.TestCase):
         self.cli("backup", "verify-roundtrip", "--build", self.built["build_receipt"],
                  "--downloaded", path, "--restore-to", destination,
                  "--cloud-url", "https://drive.google.com/file/d/synthetic/view", success=False)
-        self.assertEqual((destination / "keep.txt").read_text(), "new")
+        self.assertEqual((destination / "keep.txt").read_text(encoding="utf-8"), "new")
 
     def test_copies_cleanup_requires_cloud_presence_confirmation(self):
         self.roundtrip(); plan = self.cleanup_plan()
@@ -111,14 +111,14 @@ class BackupTests(unittest.TestCase):
         (self.root / "new.txt").write_text("newly downloaded")
         plan = self.cleanup_plan("originals")
         self.clean(plan, "--cloud-available", "--delete-originals")
-        self.assertEqual(original.read_text(), "changed by user")
-        self.assertEqual((self.root / "new.txt").read_text(), "newly downloaded")
+        self.assertEqual(original.read_text(encoding="utf-8"), "changed by user")
+        self.assertEqual((self.root / "new.txt").read_text(encoding="utf-8"), "newly downloaded")
 
     def test_change_after_cleanup_preview_is_preserved(self):
         self.roundtrip(); plan = self.cleanup_plan("originals")
         original = self.root / "report #1 & 100%.txt"; original.write_text("later edit")
         result = self.clean(plan, "--cloud-available", "--delete-originals")
-        self.assertEqual(original.read_text(), "later edit")
+        self.assertEqual(original.read_text(encoding="utf-8"), "later edit")
         self.assertTrue(result["preserved"])
 
     def test_keep_filename_is_unconditional(self):
@@ -132,12 +132,12 @@ class BackupTests(unittest.TestCase):
         self.roundtrip(); new = self.restored / "Library" / "new.txt"; new.write_text("new user content")
         plan = self.cleanup_plan()
         result = self.clean(plan, "--cloud-available")
-        self.assertEqual(new.read_text(), "new user content")
+        self.assertEqual(new.read_text(encoding="utf-8"), "new user content")
         self.assertTrue(result["preserved"])
 
     def test_modified_receipt_or_plan_cannot_authorize_deletion(self):
         self.roundtrip(); plan = self.cleanup_plan()
-        p = Path(plan["plan"]); data = json.loads(p.read_text()); data["source_root"] = str(self.base)
+        p = Path(plan["plan"]); data = json.loads(p.read_text(encoding="utf-8")); data["source_root"] = str(self.base)
         p.write_text(json.dumps(data))
         self.clean(plan, "--cloud-available", success=False)
         self.assertTrue(Path(self.built["archive"]).exists())

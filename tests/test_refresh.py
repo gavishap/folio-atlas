@@ -22,7 +22,7 @@ class RefreshTests(unittest.TestCase):
             self.assertEqual(p.returncode, 0, p.stderr); return json.loads(p.stdout)
         cli("learn", "--container", str(projects))
         first = cli("preview"); cli("apply", "--plan", Path(first["plan"]).name)
-        first_data = json.loads(Path(first["plan"]).read_text())
+        first_data = json.loads(Path(first["plan"]).read_text(encoding="utf-8"))
         first_file = folder / first_data["moves"][0]["destination"]
         original_identity = first_file.stat().st_ino
         schema = folder / ".folio-atlas/schema.json"
@@ -32,7 +32,7 @@ class RefreshTests(unittest.TestCase):
         (folder / "keep.txt").write_text("protected")
         (folder / "still-downloading.zip.crdownload").write_text("partial")
         fresh = cli("refresh")
-        plan = json.loads(Path(fresh["plan"]).read_text())
+        plan = json.loads(Path(fresh["plan"]).read_text(encoding="utf-8"))
         self.assertEqual([m["source"] for m in plan["moves"]], ["Juniper Studio typography palette.pdf"])
         self.assertIn("Projects/Juniper Studio/PDFs/Design Research", plan["moves"][0]["destination"])
         cli("apply", "--plan", Path(fresh["plan"]).name)

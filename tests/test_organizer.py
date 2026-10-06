@@ -48,7 +48,7 @@ class OrganizerTests(unittest.TestCase):
 
     def plan(self):
         state = self.root / TOOL.STATE
-        name = json.loads((state / "latest-plan.json").read_text())["file"]
+        name = json.loads((state / "latest-plan.json").read_text(encoding="utf-8"))["file"]
         return state / name, json.loads((state / name).read_text(encoding="utf-8"))
 
     def types(self):
@@ -91,7 +91,7 @@ class OrganizerTests(unittest.TestCase):
         self.cli("apply", "--plan", plan_path.name)
         self.cli("verify", "--plan", plan_path.name)
         self.assertEqual(hashes(self.root), baseline)
-        index_name = json.loads((self.root / TOOL.STATE / "owner.json").read_text())["index"]
+        index_name = json.loads((self.root / TOOL.STATE / "owner.json").read_text(encoding="utf-8"))["index"]
         index = (self.root / index_name).read_text(encoding="utf-8")
         data = json.loads(re.search(r'<script id="file-data" type="application/json">([\s\S]*?)</script>', index).group(1))
         self.assertTrue(any(row["name"] == "Bundle" for row in data["bundles"]))
@@ -188,11 +188,11 @@ class OrganizerTests(unittest.TestCase):
         destination = self.root / first["moves"][0]["destination"]
         put(destination, "existing occupant")
         self.cli("apply", success=False)
-        self.assertEqual(destination.read_text(), "existing occupant")
+        self.assertEqual(destination.read_text(encoding="utf-8"), "existing occupant")
         self.cli("preview", "--types-only")
         self.assertIn("a (2).txt", self.plan()[1]["moves"][0]["destination"])
         self.cli("apply")
-        self.assertEqual(destination.read_text(), "existing occupant")
+        self.assertEqual(destination.read_text(encoding="utf-8"), "existing occupant")
 
     def test_occupied_source_blocks_undo(self):
         put(self.root / "a.txt", "original")
@@ -200,7 +200,7 @@ class OrganizerTests(unittest.TestCase):
         self.cli("apply")
         put(self.root / "a.txt", "new occupant")
         self.cli("undo", success=False)
-        self.assertEqual((self.root / "a.txt").read_text(), "new occupant")
+        self.assertEqual((self.root / "a.txt").read_text(encoding="utf-8"), "new occupant")
 
     def test_changed_payload_blocks_undo(self):
         put(self.root / "Bundle" / "a.txt", "original")
@@ -223,13 +223,13 @@ class OrganizerTests(unittest.TestCase):
         self.cli("apply")
         self.cli("verify")
         self.cli("undo")
-        self.assertEqual((self.root / "a.txt").read_text(), "original")
+        self.assertEqual((self.root / "a.txt").read_text(encoding="utf-8"), "original")
 
     def test_index_name_is_reserved_and_replacement_refused(self):
         put(self.root / "START HERE - Downloads Organizer.html", "existing original index name")
         put(self.root / "a.txt", "original")
         self.cli("learn")
-        cfg = json.loads((self.root / TOOL.STATE / "owner.json").read_text())
+        cfg = json.loads((self.root / TOOL.STATE / "owner.json").read_text(encoding="utf-8"))
         index = self.root / cfg["index"]
         self.assertNotEqual(cfg["index"], "START HERE - Downloads Organizer.html")
         self.assertTrue(index.exists())
@@ -237,7 +237,7 @@ class OrganizerTests(unittest.TestCase):
         index.rename(moved_aside)
         put(index, "new occupant")
         self.cli("index", success=False)
-        self.assertEqual(index.read_text(), "new occupant")
+        self.assertEqual(index.read_text(encoding="utf-8"), "new occupant")
 
     def test_link_bundle_stays_at_source(self):
         outside = put(self.area / "Outside" / "keep.txt", "outside remains")
@@ -251,7 +251,7 @@ class OrganizerTests(unittest.TestCase):
         self.assertEqual(len(plan["skipped"]), 1)
         self.cli("apply")
         self.assertTrue((self.root / "Bundle").is_dir())
-        self.assertEqual(outside.read_text(), "outside remains")
+        self.assertEqual(outside.read_text(encoding="utf-8"), "outside remains")
 
     def test_tampered_escape_plan_refused(self):
         put(self.root / "a.txt", "original")
@@ -268,8 +268,8 @@ class OrganizerTests(unittest.TestCase):
         text = plan_path.with_suffix(".csv").read_text(encoding="utf-8-sig")
         self.assertIn("'=SUM(1).txt", text)
         self.cli("apply")
-        cfg = json.loads((self.root / TOOL.STATE / "owner.json").read_text())
-        page = (self.root / cfg["index"]).read_text()
+        cfg = json.loads((self.root / TOOL.STATE / "owner.json").read_text(encoding="utf-8"))
+        page = (self.root / cfg["index"]).read_text(encoding="utf-8")
         data = json.loads(re.search(r'<script id="file-data" type="application/json">([\s\S]*?)</script>', page).group(1))
         self.assertTrue(any(row["name"] == "a&b.txt" and "%26" in row["url"] for row in data["files"]))
         self.assertIn("a%26b.txt", page)
