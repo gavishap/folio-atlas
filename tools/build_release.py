@@ -8,7 +8,7 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
 PUBLIC_FILES = [
-    ".gitignore", ".agents/plugins/marketplace.json", ".codex-plugin/plugin.json",
+    ".gitignore", ".gitattributes", ".agents/plugins/marketplace.json", ".codex-plugin/plugin.json",
     ".github/workflows/test.yml", "AGENTS.md", "CLAUDE.md", "README.md", "LICENSE",
     "PRIVACY.md", "SECURITY.md", "CONTRIBUTING.md", "PUBLISHING.md", "VALIDATION.md",
     "plugin.json", "pyproject.toml", "assets/icon.svg", "assets/folio-atlas-banner.gif",
@@ -42,6 +42,7 @@ def public_files():
         if any(parent.is_symlink() for parent in path.parents): raise ValueError("Linked package ancestor.")
         data = path.read_bytes()
         if name not in BINARY:
+            data = data.replace(b"\r\n", b"\n")
             text = data.decode("utf-8")
             for label, pattern in PATTERNS.items():
                 if re.search(pattern, text): raise ValueError("Privacy check failed: " + label + " in " + name)
