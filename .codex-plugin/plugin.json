@@ -1,0 +1,6 @@
+{
+  "name": "folio-atlas",
+  "version": "1.0.0",
+  "description": "Project-aware Downloads, a portable date/size browser, and optional verified cloud backup.",
+  "skills": "./skills/"
+}

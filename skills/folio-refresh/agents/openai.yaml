@@ -1,0 +1,7 @@
+interface:
+  display_name: "Folio Refresh"
+  short_description: "Sort new downloads using your saved schema"
+  brand_color: "#123D35"
+  default_prompt: "Use $folio-refresh to organize new loose downloads and update START HERE using my existing schema."
+policy:
+  allow_implicit_invocation: true

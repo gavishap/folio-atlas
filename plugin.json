@@ -1,0 +1,29 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "folio-atlas",
+  "version": "1.0.0",
+  "description": "Turn Downloads into a map of your work. Learn local project vocabulary, sort and refresh without deleting files, browse by date or size, and optionally verify a Google Drive backup before explicit local cleanup.",
+  "license": "MIT",
+  "keywords": ["downloads", "projects", "organization", "agent-skills", "local", "backup"],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Folio Atlas",
+        "shortDescription": "A map of your downloads",
+        "longDescription": "Three local agent workflows: Sort learns each user's selected projects and organizes confident matches by project and other files by type/subject; Refresh reuses the private schema for new arrivals; Archive is explicit-only and verifies a genuine cloud download and full SHA256 restore before separately authorized local cleanup. Includes a portable HTML browser with date and size controls. Python 3.10+ and local filesystem access are required. Core scripts are offline; cloud transfers use the user's separately available connector or browser. No personal profiles, credentials, watchers, or hooks are included.",
+        "category": "Productivity",
+        "capabilities": ["Learn local projects", "Sort and refresh Downloads", "Browse by date and size", "Verify portable backups"],
+        "defaultPrompt": ["Use Folio Sort to learn my projects and organize Downloads without deleting anything.", "Use Folio Refresh to sort my new downloads using my saved schema."],
+        "brandColor": "#123D35",
+        "brandColorDark": "#B59A63",
+        "developerName": "gavishap",
+        "websiteURL": "https://github.com/gavishap/folio-atlas",
+        "supportURL": "https://github.com/gavishap/folio-atlas/issues",
+        "privacyPolicyURL": "https://github.com/gavishap/folio-atlas/blob/main/PRIVACY.md",
+        "composerIcon": "./assets/icon.svg",
+        "logo": "./assets/icon.svg"
+      },
+      "onboardingSkill": "./skills/folio-sort/SKILL.md"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict'),path=require('node:path');
+const template=fs.readFileSync(path.join(__dirname,'../folio_atlas/library.html'),'utf8');
+const code=template.match(/\/\* PURE_LOGIC_BEGIN \*\/([\s\S]*?)\/\* PURE_LOGIC_END \*\//)[1];
+const context=vm.createContext({Date});vm.runInContext(code,context);
+const epoch=Date.parse('2026-01-02T12:00:00');
+const data={files:[{name:'A',path:'A',project:'Juniper',size:10,modified:epoch,created:epoch-100},
+                  {name:'B',path:'B',project:'Harbor',size:20,modified:epoch+86400000,created:epoch-1000}],bundles:[]};
+assert.equal(context.selectRows(data,{sort:'largest'})[0].name,'B');
+assert.equal(context.selectRows(data,{sort:'smallest'})[0].name,'A');
+assert.equal(context.selectRows(data,{sort:'newest'})[0].name,'B');
+assert.equal(context.selectRows(data,{sort:'oldest'})[0].name,'A');
+assert.equal(context.selectRows(data,{sort:'created'})[0].name,'A');
+assert.equal(context.selectRows(data,{project:'Juniper'})[0].name,'A');
+assert.equal(context.selectRows(data,{from:'2026-01-02',through:'2026-01-02'}).length,1);
+assert.equal(context.selectRows(data,{search:'harbor'}).length,1);
+assert.equal(context.selectRows(data,{view:'bundles'}).length,0);
+assert.equal(context.formatSize(1024),'1.0 KB');
+assert.equal(context.formatSize(0),'0 B');
+assert.equal(context.displayedDate(data.files[0],'created'),epoch-100);
+assert.equal(context.displayedDate({...data.files[0],created:null},'created'),epoch);
+console.log('Library date, size, project, search, inclusive range, and folder-view controls passed.');

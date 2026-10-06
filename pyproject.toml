@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "folio-atlas"
+version = "1.0.0"
+description = "Turn Downloads into a map of your work with local agent skills."
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [{name = "gavishap"}]
+dependencies = []
+
+[project.optional-dependencies]
+pdf = ["pypdf"]
+design = ["Pillow"]
+
+[project.scripts]
+folio-atlas = "folio_atlas.cli:main"
+
+[project.urls]
+Repository = "https://github.com/gavishap/folio-atlas"
+Issues = "https://github.com/gavishap/folio-atlas/issues"
+
+[tool.setuptools]
+packages = ["folio_atlas"]
+
+[tool.setuptools.package-data]
+folio_atlas = ["library.html"]

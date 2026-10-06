@@ -1,0 +1,7 @@
+interface:
+  display_name: "Folio Sort"
+  short_description: "Learn your projects and organize Downloads"
+  brand_color: "#123D35"
+  default_prompt: "Use $folio-sort to learn my selected projects and organize my Downloads without deleting files."
+policy:
+  allow_implicit_invocation: true

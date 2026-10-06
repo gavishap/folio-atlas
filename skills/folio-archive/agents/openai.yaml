@@ -1,0 +1,7 @@
+interface:
+  display_name: "Folio Archive"
+  short_description: "Opt-in backup with verified cloud roundtrip"
+  brand_color: "#B59A63"
+  default_prompt: "Use $folio-archive to back up my organized library to Google Drive and verify a full restore without deleting local files."
+policy:
+  allow_implicit_invocation: false

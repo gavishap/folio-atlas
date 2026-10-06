@@ -1,0 +1,17 @@
+__pycache__/
+*.pyc
+.folio-atlas/
+dist/
+evaluation-private/
+test-runs/
+*.log
+*.jsonl
+.venv/
+*.egg-info/
+.folio-atlas-receipt-key
+build-*.json
+roundtrip-*.json
+cleanup-plan-*.json
+cleanup-result-*.json
+START HERE*.html
+*.zip
